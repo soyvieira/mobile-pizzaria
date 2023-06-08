@@ -14,6 +14,8 @@ import { Feather } from '@expo/vector-icons';
 import { api } from '../../services/api';
 import { ModalPicker } from '../../components/ModalPicker';
 import { ListItem } from '../../components/ListItem';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackParamsList } from '../../routes/app.routes';
 
 type RouteDetailParams = {
   Order:{
@@ -42,7 +44,7 @@ type OrderRouteProps = RouteProp<RouteDetailParams, 'Order'>;
 
 export default function Order(){
   const route = useRoute<OrderRouteProps>();
-  const navigation= useNavigation();
+  const navigation= useNavigation<NativeStackNavigationProp<StackParamsList>>();
 
   const [ category, setCategory ] = useState<CategoryProps[] | []>([]);
   const [ categorySelected, setCategorySelected ] = useState<CategoryProps | undefined>();
@@ -134,6 +136,13 @@ export default function Order(){
 
   }
 
+  async function handleFinishOrder(){
+    navigation.navigate('FinishOrder', {
+      number: route.params?.number,
+      order_id: route.params?.order_id
+    })
+  }
+
   return(
     <ImageBackground 
       source={require('../../assets/background-image.jpg')} 
@@ -186,6 +195,7 @@ export default function Order(){
         <TouchableOpacity
           style={[styles.button, {opacity: items.length ===0 ? 0.3 : 1}]}
           disabled={items.length === 0}
+          onPress={handleFinishOrder}
         >
           <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
